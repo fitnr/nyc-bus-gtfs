@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS gtfs_feeds;
+DROP TABLE IF EXISTS gtfs_agency;
+DROP TABLE IF EXISTS gtfs_calendar;
+DROP TABLE IF EXISTS gtfs_calendar_dates;
+DROP TABLE IF EXISTS gtfs_routes;
+DROP TABLE IF EXISTS gtfs_shapes;
+DROP TABLE IF EXISTS gtfs_stop_times;
+DROP TABLE IF EXISTS gtfs_stops;
+DROP TABLE IF EXISTS gtfs_trips;
