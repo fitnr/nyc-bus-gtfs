@@ -25,25 +25,26 @@ IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 
 .PHONY: mysql mysql-% init
 
-mysql: gtfs/$(GTFSVERSION)/calendar.txt $(addprefix mysql-,$(files))
-	$(MYSQL) -e "INSERT gtfs_feeds SET feed_index = '$(GTFSVERSION)', \
-	  feed_start_date = '$(shell csvcut -c start_date $< | csvstat --min | sed $(DATESED))', \
-	  feed_end_date = '$(shell csvcut -c start_date $< | csvstat --max | sed $(DATESED))', \
-	  feed_published_date = '$(shell echo $(GTFSVERSION) | sed $(DATESED))';"
-	$(MYSQL) < import_gtfs.sql
+mysql: $(addprefix mysql-,$(files))
 
-$(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSVERSION)/$x/gtfs_%.txt)
+$(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSVERSION)/$x/gtfs_%.txt) | mysql-gtfs-feeds
 	for file in $^; do \
 	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' INTO TABLE gtfs_$(*F) \
 	  $(IMPORTFLAGS) \
 	  ($(COLUMNS_$(*F))) \
-	  SET feed_index = '$(GTFSVERSION)'"; \
+	  SET feed_index = (SELECT MAX(feed_index) from gtfs_feeds)"; \
 	done
 
-.SECONDEXPANSION:
+mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/calendar.txt
+	$(MYSQL) -e "INSERT gtfs_feeds SET \
+	  feed_start_date = '$(shell csvcut -c start_date $< | csvstat --min | sed $(DATESED))', \
+	  feed_end_date = '$(shell csvcut -c start_date $< | csvstat --max | sed $(DATESED))', \
+	  feed_download_date = '$(shell echo $(GTFSVERSION) | sed $(DATESED))';"
 
 files_by_gtfs_prefix = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/gtfs_$f.txt))
 files_by_gtfs_pure = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/$f.txt))
+
+.SECONDEXPANSION:
 
 # Remove leading spaces (and we need to rename files, anyway)
 $(files_by_gtfs_prefix): gtfs/$(GTFSVERSION)/%.txt: gtfs/$(GTFSVERSION)/$$(*D)/$$(subst gtfs_,,$$(*F)).txt

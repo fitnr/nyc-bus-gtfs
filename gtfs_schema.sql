@@ -3,17 +3,16 @@
 
 DROP TABLE IF EXISTS gtfs_feeds;
 CREATE TABLE gtfs_feeds (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null AUTO_INCREMENT PRIMARY KEY,
   feed_start_date date not null,
   feed_end_date date not null,
-  feed_published_date date not null,
-  feed_name varchar(255) not null,
-  PRIMARY KEY (feed_index)
+  feed_download_date date not null,
+  feed_name varchar(255) not null
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS gtfs_agency;
 CREATE TABLE gtfs_agency (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   agency_id varchar(255) not null,
   agency_name varchar(255) not null,
   agency_url varchar(255) not null,
@@ -23,7 +22,7 @@ CREATE TABLE gtfs_agency (
 
 DROP TABLE IF EXISTS gtfs_calendar;
 CREATE TABLE gtfs_calendar (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   service_id VARCHAR(27) NOT NULL, 
   monday TINYINT(1) NOT NULL, 
   tuesday TINYINT(1) NOT NULL, 
@@ -40,7 +39,7 @@ CREATE TABLE gtfs_calendar (
 
 DROP TABLE IF EXISTS gtfs_calendar_dates;
 CREATE TABLE gtfs_calendar_dates (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   service_id varchar(255) not null,
   date date not null,
   exception_type tinyint not null,
@@ -50,7 +49,7 @@ CREATE TABLE gtfs_calendar_dates (
 
 DROP TABLE IF EXISTS gtfs_routes;
 CREATE TABLE gtfs_routes (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   route_id varchar(255) not null,
   agency_id varchar(255) not null,
   route_short_name varchar(255) not null,
@@ -65,7 +64,7 @@ CREATE TABLE gtfs_routes (
 
 DROP TABLE IF EXISTS gtfs_shapes;
 CREATE TABLE gtfs_shapes (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   shape_id varchar(255) not null,
   shape_pt_lat DECIMAL(8, 6) not null,
   shape_pt_lon DECIMAL(9, 6) not null,
@@ -75,7 +74,7 @@ CREATE TABLE gtfs_shapes (
 
 DROP TABLE IF EXISTS gtfs_stop_times;
 CREATE TABLE gtfs_stop_times (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   trip_id varchar(255) not null,
   arrival_time time not null,
   departure_time time not null,
@@ -88,7 +87,7 @@ CREATE TABLE gtfs_stop_times (
 
 DROP TABLE IF EXISTS gtfs_stops;
 CREATE TABLE gtfs_stops (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   stop_id varchar(255) not null,
   stop_name varchar(255) not null,
   stop_desc varchar(255) not null,
@@ -99,7 +98,7 @@ CREATE TABLE gtfs_stops (
 
 DROP TABLE IF EXISTS gtfs_trips;
 CREATE TABLE gtfs_trips (
-  feed_index VARCHAR(8) not null,
+  feed_index INTEGER(4) not null,
   route_id varchar(255) not null,
   service_id varchar(255) not null,
   trip_id varchar(255) not null,
