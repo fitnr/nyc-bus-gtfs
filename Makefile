@@ -23,7 +23,7 @@ IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 	LINES TERMINATED BY '\n' \
 	IGNORE 1 LINES
 
-.PHONY: mysql mysql-% init
+.PHONY: gtfs mysql mysql-% init
 
 mysql: $(addprefix mysql-,$(files))
 
@@ -43,6 +43,8 @@ mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/calendar.txt
 
 files_by_gtfs_prefix = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/gtfs_$f.txt))
 files_by_gtfs_pure = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/$f.txt))
+
+gtfs: $(files_by_gtfs_pure)
 
 .SECONDEXPANSION:
 
