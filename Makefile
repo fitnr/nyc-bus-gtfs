@@ -51,7 +51,8 @@ gtfs: $(files_by_gtfs_pure)
 
 # Remove leading spaces (and we need to rename files, anyway)
 $(files_by_gtfs_prefix): gtfs/$(GTFSVERSION)/%.txt: gtfs/$(GTFSVERSION)/$$(*D)/$$(subst gtfs_,,$$(*F)).txt
-	sed 's/, \{1,\}/,/g' $< > $@
+	sed 's/, \{1,\}/,/g' $< | \
+	tr -d '\r' > $@
 
 $(files_by_gtfs_pure): gtfs/$(GTFSVERSION)/%.txt: gtfs/$(GTFSVERSION)/$$(*D).zip | $$(@D)
 	unzip -oqd $(@D) $< $(@F)
