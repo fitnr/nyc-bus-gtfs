@@ -24,6 +24,7 @@ IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 	IGNORE 1 LINES
 
 .PHONY: gtfs mysql mysql-% init
+.INTERMEDIATE: $(NYCTFILES)
 
 mysql: $(addprefix mysql-,$(files))
 
@@ -35,7 +36,7 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSVERSION)
 	  SET feed_index = (SELECT MAX(feed_index) from gtfs_feeds)"; \
 	done
 
-mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/calendar.txt
+mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/google_transit_manhattan/calendar.txt
 	$(MYSQL) -e "INSERT gtfs_feeds SET \
 	  feed_start_date = '$(shell csvcut -c start_date $< | csvstat --min | sed $(DATESED))', \
 	  feed_end_date = '$(shell csvcut -c start_date $< | csvstat --max | sed $(DATESED))', \
