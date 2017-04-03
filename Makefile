@@ -42,7 +42,7 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSVERSION)
 mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/google_transit_manhattan/calendar.txt
 	$(MYSQL) -e "INSERT gtfs_feeds SET \
 	  feed_start_date = '$(shell csvcut -c start_date $< | csvstat --min | sed $(DATESED))', \
-	  feed_end_date = '$(shell csvcut -c start_date $< | csvstat --max | sed $(DATESED))', \
+	  feed_end_date = '$(shell csvcut -c end_date $< | csvstat --max | sed $(DATESED))', \
 	  feed_download_date = '$(convertdateformat)';"
 
 files_by_gtfs_prefix = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/gtfs_$f.txt))
