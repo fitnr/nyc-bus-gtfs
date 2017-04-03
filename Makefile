@@ -18,6 +18,8 @@ MYSQLFLAGS = -u $(USER) -p$(PASS)
 DATABASE = nycbus
 MYSQL = mysql $(DATABASE) $(MYSQLFLAGS)
 
+convertdateformat = $(shell echo $(GTFSVERSION) | sed $(DATESED))
+
 IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 	TERMINATED BY ',' \
 	LINES TERMINATED BY '\n' \
@@ -33,14 +35,15 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSVERSION)
 	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' INTO TABLE gtfs_$(*F) \
 	  $(IMPORTFLAGS) \
 	  ($(COLUMNS_$(*F))) \
-	  SET feed_index = (SELECT MAX(feed_index) from gtfs_feeds)"; \
+	  SET $(SET_$(*F)) \
+	    feed_index = (SELECT feed_index from gtfs_feeds WHERE feed_download_date = '$(convertdateformat)')"; \
 	done
 
 mysql-gtfs-feeds: gtfs/$(GTFSVERSION)/google_transit_manhattan/calendar.txt
 	$(MYSQL) -e "INSERT gtfs_feeds SET \
 	  feed_start_date = '$(shell csvcut -c start_date $< | csvstat --min | sed $(DATESED))', \
 	  feed_end_date = '$(shell csvcut -c start_date $< | csvstat --max | sed $(DATESED))', \
-	  feed_download_date = '$(shell echo $(GTFSVERSION) | sed $(DATESED))';"
+	  feed_download_date = '$(convertdateformat)';"
 
 files_by_gtfs_prefix = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/gtfs_$f.txt))
 files_by_gtfs_pure = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSVERSION)/$d/$f.txt))

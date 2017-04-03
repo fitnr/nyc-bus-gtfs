@@ -31,8 +31,8 @@ CREATE TABLE gtfs_calendar (
   friday TINYINT(1) NOT NULL, 
   saturday TINYINT(1) NOT NULL, 
   sunday TINYINT(1) NOT NULL, 
-  start_date TINYINT(1) NOT NULL, 
-  end_date TINYINT(1) NOT NULL,
+  start_date DATE NOT NULL, 
+  end_date DATE NOT NULL,
   PRIMARY KEY (feed_index, service_id),
   UNIQUE KEY service_id (service_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
