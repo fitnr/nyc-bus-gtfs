@@ -36,7 +36,7 @@ convertdateformat = $(shell echo $(GTFSDATE) | sed $(DATESED))
 
 IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 	TERMINATED BY ',' \
-	LINES TERMINATED BY '\n' \
+	LINES TERMINATED BY '\r\n' \
 	IGNORE 1 LINES
 
 .PHONY: gtfs mysql mysql-% init
@@ -49,8 +49,7 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSDATE)/$x
 	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' INTO TABLE gtfs_$(*F) \
 	  $(IMPORTFLAGS) \
 	  ($(COLUMNS_$(*F))) \
-	  SET $(SET_$(*F)) \
-	    feed_index = (SELECT feed_index from gtfs_feeds WHERE feed_download_date = '$(convertdateformat)')"; \
+	  $(SET_$(*F))"; \
 	done
 
 mysql-gtfs-feeds: gtfs/$(GTFSDATE)/calendar.txt
@@ -71,8 +70,7 @@ gtfs: $(files_by_gtfs_pure)
 
 # Remove leading spaces (and we need to rename files, anyway)
 $(files_by_gtfs_prefix): gtfs/$(GTFSDATE)/%.txt: gtfs/$(GTFSDATE)/$$(*D)/$$(subst gtfs_,,$$(*F)).txt
-	sed 's/, \{1,\}/,/g' $< | \
-	tr -d '\r' > $@
+	sed 's/, \{1,\}/,/g' $< > $@
 
 $(files_by_gtfs_pure): gtfs/$(GTFSDATE)/%.txt: gtfs/$(GTFSDATE)/$$(*D).zip | $$(@D)
 	unzip -oqd $(@D) $< $(@F)
