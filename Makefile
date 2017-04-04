@@ -46,7 +46,7 @@ mysql: $(addprefix mysql-,$(files))
 
 $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSDATE)/$x/gtfs_%.txt) | mysql-gtfs-feeds
 	for file in $^; do \
-	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' INTO TABLE gtfs_$(*F) \
+	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' IGNORE INTO TABLE gtfs_$(*F) \
 	  $(IMPORTFLAGS) \
 	  ($(COLUMNS_$(*F))) \
 	  $(SET_$(*F))"; \
