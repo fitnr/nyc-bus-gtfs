@@ -24,16 +24,16 @@ Load the downloaded GTFS into the MySQL database
 make mysql DATABASE=name_of_your_database
 ```
 
-If a day goes by, or you have older GTFS data to load, use the GTFSVERSION variable:
+If a day goes by, or you have older GTFS data to load, use the GTFSDATE variable:
 ```
-make mysql GTFSVERSION=20170319
+make mysql GTFSDATE=20170319
 ```
 
 ## Download from transitfeed
 
 ````
-# download NYCT data and Bus Company data, which often has a different date
-make USE_TRANSITFEED=YES GTFSVERSION=20151223 BUSCOVERSION=20151227 gtfs
+# download NYCT data and Bus Company data, which often have a different date
+make TRANSITFEED=YES GTFSDATE=20151223 BUSCODATE=20151227 gtfs
 ````
 
 The data will be put in the 
