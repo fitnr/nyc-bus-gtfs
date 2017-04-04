@@ -29,6 +29,15 @@ If a day goes by, or you have older GTFS data to load, use the GTFSVERSION varia
 make mysql GTFSVERSION=20170319
 ```
 
+## Download from transitfeed
+
+````
+# download NYCT data and Bus Company data, which often has a different date
+make USE_TRANSITFEED=YES GTFSVERSION=20151223 BUSCOVERSION=20151227 gtfs
+````
+
+The data will be put in the 
+
 ## Schema
 
 The database will contain tables for each entry file in the GTFS schema. One additional column appears on each, `feed_index`, which is an integer keyed to the `gtfs_feeds` table. The `gtfs_feeds` contains a record of the `feed_start_date`, `feed_end_date` and `feed_download_date`.
