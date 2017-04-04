@@ -12,6 +12,9 @@ This repo downloads NYC bus GTFS data and loads it into a MySQL database, tracki
 `sudo make install`
 
 ## Usage
+
+(If using a `~/.my.cnf` file, append `MYSQLFLAGS=` to all commands.)
+
 ```
 make init DATABASE=name_of_your_database
 ```
