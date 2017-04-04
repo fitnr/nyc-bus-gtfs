@@ -5,7 +5,11 @@ This repo downloads NYC bus GTFS data and loads it into a MySQL database, tracki
 ## Requirements
 * MySQL
 * bash command line environment
+* csvkit
 
+## Install
+
+`sudo make install`
 
 ## Usage
 ```

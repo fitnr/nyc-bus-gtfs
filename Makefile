@@ -109,3 +109,6 @@ init: gtfs_schema.sql
 	$(MYSQL) < $<
 
 clean: clean.sql; $(MYSQL) < $<
+
+
+install:; pip install -r requirements.txt
