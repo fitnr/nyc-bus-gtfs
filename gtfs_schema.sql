@@ -7,7 +7,7 @@ CREATE TABLE gtfs_feeds (
   feed_start_date date not null,
   feed_end_date date not null,
   feed_download_date date not null,
-  feed_name varchar(255) not null
+  feed_url varchar(255) not null
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS gtfs_agency;
@@ -33,9 +33,9 @@ CREATE TABLE gtfs_calendar (
   sunday TINYINT(1) NOT NULL, 
   start_date DATE NOT NULL, 
   end_date DATE NOT NULL,
+  PRIMARY KEY (feed_index, service_id),
   KEY start_date (start_date),
   KEY end_date (end_date)
-  PRIMARY KEY (feed_index, service_id),
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS gtfs_calendar_dates;
