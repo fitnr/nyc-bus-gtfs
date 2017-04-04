@@ -14,7 +14,7 @@ GTFSDATE ?= $(shell date +"%Y%m%d")
 
 ifdef TRANSITFEED
 
-gtfses = bronx brooklyn manhattan queens staten_island
+gtfses ?= bronx brooklyn manhattan queens staten_island
 
 ifdef BUSCODATE
 gtfses += busco
@@ -59,7 +59,7 @@ mysql-gtfs-feeds: gtfs/$(GTFSDATE)/calendar.txt
 	  feed_download_date = '$(convertdateformat)';"
 
 gtfs/$(GTFSDATE)/calendar.txt: $(foreach d,$(GTFSES),gtfs/$(GTFSDATE)/$(d)/calendar.txt)
-	csvstack $^ | \
+	{ csvstack $^ || cat $^ ; } | \
 	csvcut -c start_date,end_date | \
 	sed $(DATESED) > $@
 
