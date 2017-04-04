@@ -49,7 +49,8 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSDATE)/$x
 	  $(MYSQL) --local-infile -e "LOAD DATA LOCAL INFILE '$$file' IGNORE INTO TABLE gtfs_$(*F) \
 	  $(IMPORTFLAGS) \
 	  ($(COLUMNS_$(*F))) \
-	  $(SET_$(*F))"; \
+	  SET $(SET_$(*F)) \
+	    feed_index = (SELECT feed_index from gtfs_feeds WHERE feed_download_date = '$(convertdateformat)')"; \
 	done
 
 mysql-gtfs-feeds: gtfs/$(GTFSDATE)/calendar.txt
