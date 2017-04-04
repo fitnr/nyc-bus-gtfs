@@ -54,12 +54,14 @@ $(addprefix mysql-,$(files)): mysql-%: $(foreach x,$(GTFSES),gtfs/$(GTFSDATE)/$x
 
 mysql-gtfs-feeds: gtfs/$(GTFSDATE)/calendar.txt
 	$(MYSQL) -e "INSERT gtfs_feeds SET \
-	  feed_start_date = '$(shell csvstat -c start_date --min $< | sed $(DATESED))', \
-	  feed_end_date = '$(shell csvstat -c end_date --max $< | sed $(DATESED))', \
+	  feed_start_date = '$(shell csvstat -c start_date --min $<)', \
+	  feed_end_date = '$(shell csvstat -c end_date --max $<)', \
 	  feed_download_date = '$(convertdateformat)';"
 
 gtfs/$(GTFSDATE)/calendar.txt: $(foreach d,$(GTFSES),gtfs/$(GTFSDATE)/$(d)/calendar.txt)
-	csvstack $^ | csvcut -c start_date,end_date > $@
+	csvstack $^ | \
+	csvcut -c start_date,end_date | \
+	sed $(DATESED) > $@
 
 files_by_gtfs_prefix = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSDATE)/$d/gtfs_$f.txt))
 files_by_gtfs_pure = $(foreach d,$(GTFSES),$(foreach f,$(files),gtfs/$(GTFSDATE)/$d/$f.txt))
