@@ -105,6 +105,7 @@ CREATE TABLE gtfs_trips (
   trip_id varchar(255) not null,
   trip_headsign varchar(255) not null,
   direction_id tinyint not null,
+  block_id INT not null,
   shape_id varchar(255) not null,
   PRIMARY KEY (feed_index, trip_id),
   UNIQUE KEY trip_id (trip_id)
