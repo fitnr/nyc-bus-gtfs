@@ -36,7 +36,7 @@ convertdateformat = $(shell echo $(GTFSDATE) | sed $(DATESED))
 
 IMPORTFLAGS = FIELDS OPTIONALLY ENCLOSED BY '\"' \
 	TERMINATED BY ',' \
-	LINES TERMINATED BY '\r\n' \
+	LINES TERMINATED BY '\n' \
 	IGNORE 1 LINES
 
 .PHONY: gtfs mysql mysql-% init
@@ -73,7 +73,7 @@ gtfs: $(files_by_gtfs_pure)
 
 # Remove leading spaces (and we need to rename files, anyway)
 $(files_by_gtfs_prefix): gtfs/$(GTFSDATE)/%.txt: gtfs/$(GTFSDATE)/$$(*D)/$$(subst gtfs_,,$$(*F)).txt
-	sed 's/, \{1,\}/,/g' $< > $@
+	sed 's/, \{1,\}/,/g' $< | tr -d '\r' > $@
 
 $(files_by_gtfs_pure): gtfs/$(GTFSDATE)/%.txt: gtfs/$(GTFSDATE)/$$(*D).zip | $$(@D)
 	unzip -oqd $(@D) $< $(@F)
@@ -105,8 +105,9 @@ endif
 
 gtfs/$(GTFSDATE) $(addprefix gtfs/$(GTFSDATE)/,$(GTFSES)):; mkdir -p $@
 
-init: gtfs_schema.sql
-	$(MYSQL) -e "CREATE DATABASE IF NOT EXISTS $(DATABASE) DEFAULT CHARACTER SET = utf8;"
+
+mysql-init: gtfs_schema.sql
+	mysql $(MYSQLFLAGS) -e "CREATE DATABASE IF NOT EXISTS $(DATABASE) DEFAULT CHARACTER SET = utf8;"
 	$(MYSQL) < $<
 
 clean: clean.sql; $(MYSQL) < $<
